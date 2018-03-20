@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Firebase Chat</title>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <script src='https://cdn.firebase.com/js/client/2.4.0/firebase.js'></script>
+</head>
+<body>
+  <input id="username" type="text" placeholder="Name"><br/>
+  <input id="text" type="text" placeholder="Message"><br/>
+  <button id="post">Post</button><br/>
+  <div id="results"></div>
+  <script>
+	var varia=decodeURIComponent(window.location.search);
+	//alert(varia);
+	//alert(localStorage.getItem("lastname"));
+    //<!-- we'll be adding code here -->
+	//localStorage.setItem("lastname", "Smith");
+	document.getElementById("text").value =varia.substr(1);
+	var s=varia.substr(1);
+	//<!--localStorage.removeItem("lastname");-->
+    var myFirebase = new Firebase('https://chatapp-198116.firebaseio.com/');
+    var usernameInput = document.querySelector('#username');
+    var textInput = document.querySelector('#text');
+    var postButton = document.querySelector('#post');
+    postButton.addEventListener("click", function() {
+      var msgUser = usernameInput.value;
+      var msgText = textInput.value;
+      myFirebase.push({msgUser,msgText});
+      textInput.value = "";
+	//window.open("file:///home/rajat/Desktop/chat/public/404.html","_self")
+	
+    });
+	if(s.length>0){
+	postButton.click();
+	}
+//alert(s.length);
+  </script>
+</body>
+</html>

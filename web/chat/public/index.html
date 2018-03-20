@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Firebase Chat</title>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <script src='https://cdn.firebase.com/js/client/2.4.0/firebase.js'></script>
+</head>
+<body>
+  <input id="username" type="text" placeholder="Name"><br/>
+  <input id="text" type="text" placeholder="Message"><br/>
+  <button id="post" >post</button><br/>
+
+  <script>
+	var i=1;
+	//alert(i);
+	i++;
+	var varia=decodeURIComponent(window.location.search);
+	document.getElementById("text").value =varia.substr(1);
+	var s=varia.substr(1);
+	//<!--localStorage.removeItem("lastname");-->
+    var myFirebase = new Firebase('https://chatapp-198116.firebaseio.com/');
+    var usernameInput = document.querySelector('#username');
+    var textInput = document.querySelector('#text');
+    var postButton = document.querySelector('#post');
+
+    postButton.addEventListener("click", function() {
+      var msgUser = usernameInput.value;
+      var msgText = textInput.value;
+      myFirebase.push({msgUser,msgText});
+      textInput.value = "";
+	//close();
+    });
+     function close(){
+	//alert("hi");
+		//window.top.close();
+	window.location.replace("https://chatapp-198116.firebaseapp.com/sucess.html");
+	}
+	if(s.length>0){
+	postButton.click();
+	setTimeout(close, 2500);}
+  </script>
+</body>
+</html>

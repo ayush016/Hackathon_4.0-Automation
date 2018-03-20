@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Firebase Chat</title>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+  <script src='https://cdn.firebase.com/js/client/2.4.0/firebase.js'></script>
+	<style>
+    body {
+      font-family: 'HelveticaNeue-Light';
+    }
+    .msg {
+      margin: 10px 0;
+      padding: 10px;
+      width: 400px;
+      background-color: #efefef;
+    }
+    #username, #text {
+      margin: 5px 0px;
+    }
+    #post, #submit {
+      padding: 0.5em 1em;
+      background-color: #50b1ff;
+      border: none;
+      color: #FFF;
+    }
+	#up {
+		position: absolute;
+		top: 8px;
+    		right: 50px;
+	}
+  </style>
+</head>
+<body>
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">Beatles</a>
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class=" nav navbar-nav navbar-right">
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+             <h1 class="text-center">Display Results</h1>
+             <!--Styled to center the form-->
+             <div style="width: 30%; margin: 3% auto;">
+                 <form>
+                     <!-- For spacing b/w the form elements we use class="form-group" -->
+                     <div class="form-group" style="font-size:25px">
+
+                         <input type="radio" id="rad" name="a" value="1" style="width:15px; height:15px;margin-right: 10px">Search
+                     </div>
+                     <div class="form-group" style="font-size:25px">
+                         <input type="radio" id="rad1" name="a" value="2" style="width:15px; height:15px;margin-right: 10px">Counts<br>
+                     </div>
+                     <div class="form-group">
+                         <input type="text" id="text" name="name" placeholder="Message" class="form-control">
+                     </div>
+                     <div class="form-group">
+                         <button class="btn btn-lg btn-success btn-block" id="post">Post</button>
+                     </div>
+                 </form>
+
+<a target="_blank" href="https://script.google.com/macros/s/AKfycbxzuIUzcrIrLb_TRw5a4bNSXD4JpmtfrEIsVwTKWCqybd56q0Lv/exec"><img src="upload.svg" id="up" class=''></a><br>
+<div id="results"></div>
+  <script type ="text/javascript">
+  var myFirebase = new Firebase('https://chatapp-198116.firebaseio.com/');
+//var usernameInput = document.querySelector('#username');
+var textInput = document.querySelector('#text');
+var postButton = document.querySelector('#post');
+var v1 = document.querySelector('#rad');
+var v2 = document.querySelector('#rad1');
+var select;
+
+postButton.addEventListener('click', function() {
+  // var msgUser = usernameInput.value;
+  if (v1.checked == true) {
+    select = 1 + ',';
+  } else {
+    select = 2 + ',';
+  }
+  //alert(select);
+  var msgUser = 'USER';
+  var msgText = select + textInput.value;
+
+  myFirebase.push({ msgUser, msgText });
+  textInput.value = '';
+});
+var msssg;
+var startListening = function() {
+  myFirebase.on('child_added', function(snapshot) {
+    var msg = snapshot.val();
+
+    var msgUsernameElement = document.createElement('b');
+    msgUsernameElement.textContent = msg.msgUser;
+    var s = msg.msgText;
+    //alert(s.indexOf("http"));
+    if (s.indexOf('http') != -1) msg.msgText = 'WAIT FOR CONFIRMATION';
+    var msgTextElement = document.createElement('p');
+    msgTextElement.textContent = msg.msgText;
+
+    var msgElement = document.createElement('div');
+    msgElement.appendChild(msgUsernameElement);
+    msgElement.appendChild(msgTextElement);
+    msgElement.className = 'msg';
+    document
+      .getElementById('results')
+      .insertBefore(msgElement, document.getElementById('results').firstChild);
+  });
+};
+
+startListening();
+</script>
+</div>
+</div>
+</div>
+</body>
+</html>

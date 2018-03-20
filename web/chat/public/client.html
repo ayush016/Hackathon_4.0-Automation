@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Firebase Chat</title>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <script src='https://cdn.firebase.com/js/client/2.4.0/firebase.js'></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    body {
+      font-family: 'HelveticaNeue-Light';
+    }
+    .msg {
+      margin: 10px 0;
+      padding: 10px;
+      width: 400px;
+      background-color: #efefef;
+    }
+    #username, #text {
+      margin: 5px 0px;
+    }
+    #post {
+      padding: 0.5em 1em;
+      background-color: #50b1ff;
+      border: none;
+      color: #FFF;
+    }
+  </style>
+</head>
+<body onload  >
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Beatles: Client</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class=" nav navbar-nav navbar-right">
+            </ul>
+        </div>
+    </div>
+</nav>
+  <!--<input id="username" type="text" placeholder="Name"><br/>-->
+  <input id="text" type="text" placeholder="Message"><br/>
+  <button id="post">Post</button><br/>
+  <div id="results"></div>
+  <script type ="text/javascript">
+	var varia=decodeURIComponent(window.location.search);
+    var pom = document.createElement('a');
+	document.getElementById("text").value =varia.substr(1);
+	var s=varia.substr(1);
+ 
+  
+
+    var myFirebase = new Firebase('https://chatapp-198116.firebaseio.com/');
+    var usernameInput = document.querySelector('#username');
+    var textInput = document.querySelector('#text');
+    var postButton = document.querySelector('#post');
+
+    postButton.addEventListener("click", function() {
+     // var msgUser = usernameInput.value;
+	var msgUser = "CLIENT";      
+	var msgText = textInput.value;
+      myFirebase.push({msgUser,msgText});
+      textInput.value = "";
+    });
+	if(s.length>0){
+	postButton.click();
+	}
+    var msssg;
+    var listOfObjects = [];
+    var s;
+    var i=0;
+    var startListening = function() {
+      myFirebase.on('child_added', function(snapshot) {
+        var msg = snapshot.val();
+    //alert(msg.msgUser);
+      
+        var msgUsernameElement = document.createElement("b");
+        msgUsernameElement.textContent = msg.msgUser;
+        
+        var msgTextElement = document.createElement("p");
+        msgTextElement.textContent = msg.msgText;
+  
+        var msgElement = document.createElement("div");
+        msgElement.appendChild(msgUsernameElement);
+        msgElement.appendChild(msgTextElement);
+    msgElement.className = "msg";
+	document.getElementById("results").insertBefore(msgElement,document.getElementById('results').firstChild);
+         listOfObjects.push(msg.msgUser+","+msg.msgText);
+		var tp=listOfObjects[i].split(',');
+	if(tp[0]!='CLIENT'){
+		//alert(tp[0]);
+        	xyz(i);
+	}
+        i++;
+      });
+    
+    }
+
+startListening();
+function xyz() {
+  pom.setAttribute('href', 'data:text/plain;charset=utf-8,' +encodeURIComponent(listOfObjects[i]));
+  pom.setAttribute('download', 'log.txt');
+  pom.style.display = 'none';
+  document.body.appendChild(pom);
+  pom.click();
+  document.body.removeChild(pom);
+}
+    // Begin listening for data
+    
+
+  </script>
+</body>
+</html>
